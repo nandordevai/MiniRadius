@@ -5,16 +5,19 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 
-public class ObjectPlacement : MonoBehaviour
+public class ObjectPlacer : MonoBehaviour
 {
     public GameObject cursor;
-    public GameObject radius;
-    private ARRaycastManager arOrigin;
-    private Pose placement;
-    private bool placementPoseIsValid = false;
+    public GameObject circle;
+    public GameObject cube;
+    GameObject area;
+    ARRaycastManager arOrigin;
+    Pose placement;
+    bool placementPoseIsValid = false;
 
     void Start()
     {
+        area = circle;
         arOrigin = FindObjectOfType<ARRaycastManager>();
     }
 
@@ -27,17 +30,16 @@ public class ObjectPlacement : MonoBehaviour
         }
     }
 
-    private void PlaceObject()
+    void PlaceObject()
     {
-        radius.transform.position = placement.position;
-        radius.transform.rotation = placement.rotation;
-        if (!radius.activeSelf) {
-            radius.SetActive(true);
+        area.transform.position = placement.position;
+        area.transform.rotation = placement.rotation;
+        if (!area.activeSelf) {
+            area.SetActive(true);
         }
-        // Instantiate(radius, placement.position, placement.rotation);
     }
 
-    private void UpdatePlacementIndicator()
+    void UpdatePlacementIndicator()
     {
         if (placementPoseIsValid) {
             cursor.SetActive(true);
@@ -47,7 +49,7 @@ public class ObjectPlacement : MonoBehaviour
         }
     }
 
-    private void UpdatePlacement()
+    void UpdatePlacement()
     {
         var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(.5f, .5f));
         var hits = new List<ARRaycastHit>();
@@ -58,6 +60,21 @@ public class ObjectPlacement : MonoBehaviour
             var camForward = Camera.current.transform.forward;
             var camBearing = new Vector3(camForward.x, 0, camForward.z).normalized;
             placement.rotation = Quaternion.LookRotation(camBearing);
+        }
+    }
+
+    public void SetAreaType(string type)
+    {
+        if (area.activeSelf) {
+            area.SetActive(false);
+        }
+        if (type == "cube") {
+            area = cube;
+        } else if (type == "circle") {
+            area = circle;
+        }
+        if (area.activeSelf) {
+            area.SetActive(true);
         }
     }
 }
