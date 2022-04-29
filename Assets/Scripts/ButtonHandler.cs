@@ -2,22 +2,10 @@ using UnityEngine;
 
 public class ButtonHandler : MonoBehaviour
 {
-    ObjectPlacer op;
+    public GameObject op;
 
-    void Start()
+    public void OnClick(string area)
     {
-        op = GameObject.Find("Interaction").GetComponent<ObjectPlacer>();
-    }
-
-    public void OnCubeClick()
-    {
-        Debug.Log("cube clicked");
-        op.SetAreaType("cube");
-    }
-
-    public void OnCircleClick()
-    {
-        Debug.Log("circle clicked");
-        op.SetAreaType("circle");
+        op.GetComponent<ObjectPlacer>().SetAreaType(area);
     }
 }
