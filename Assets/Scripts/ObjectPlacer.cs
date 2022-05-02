@@ -16,11 +16,19 @@ public class ObjectPlacer : MonoBehaviour
     Pose placement;
     bool placementPoseIsValid = false;
     bool isActive = false;
+    float[] sizes;
+    int selectedSizeItem = 2;
 
     void Start()
     {
         area = circle;
         arOrigin = FindObjectOfType<ARRaycastManager>();
+        sizes = new float[] {
+            10f,
+            15f,
+            30f,
+            60f
+        };
     }
 
     void Update()
@@ -30,23 +38,29 @@ public class ObjectPlacer : MonoBehaviour
         if (placementPoseIsValid
         && Input.touchCount > 0
         && Input.GetTouch(0).phase == TouchPhase.Began
-        && EventSystem.current.currentSelectedGameObject == null)
+        && (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == null))
         {
             PlaceObject();
         }
     }
 
+    Vector3 GetScale() {
+        var v = new Vector3(1, 1, 1);
+        return v * sizes[selectedSizeItem] / 30f;
+    }
+
     void PlaceObject()
     {
         area.transform.position = placement.position;
+        area.transform.localScale = GetScale();
         if (area.name == "Cube Container")
         {
-            area.transform.Translate(Vector3.left * .075f);
+            area.transform.Translate(Vector3.left * sizes[selectedSizeItem] / 100 / 2);
         }
         area.transform.rotation = placement.rotation;
         if (area.name == "Cone Container")
         {
-            area.transform.Translate(Vector3.down * .15f);
+            area.transform.Translate(Vector3.down * sizes[selectedSizeItem] / 100 / 2);
             var rot = Quaternion.Euler(90f, 0f, 180f) * placement.rotation.eulerAngles;
             area.transform.RotateAround(placement.position, rot, 90);
         }
@@ -75,6 +89,7 @@ public class ObjectPlacer : MonoBehaviour
 
     void UpdatePlacement()
     {
+        if (Camera.current == null) return;
         var screenCenter = Camera.current.ViewportToScreenPoint(new Vector3(.5f, .5f));
         var hits = new List<ARRaycastHit>();
         arOrigin.Raycast(screenCenter, hits, TrackableType.Planes);
@@ -107,6 +122,15 @@ public class ObjectPlacer : MonoBehaviour
             area = cone;
         }
 
+        if (isActive)
+        {
+            PlaceObject();
+        }
+    }
+
+    public void SetSize(int idx)
+    {
+        selectedSizeItem = idx;
         if (isActive)
         {
             PlaceObject();
