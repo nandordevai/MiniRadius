@@ -1,5 +1,4 @@
 using UnityEngine;
-using TMPro;
 
 public class UIHandler : MonoBehaviour
 {
@@ -16,8 +15,8 @@ public class UIHandler : MonoBehaviour
         op.SetAreaType(area);
     }
 
-    public void OnSelect(TMP_Dropdown item)
+    public void OnValueChanged(float value)
     {
-        op.SetSize(item.value);
+        op.SetSize((int)value);
     }
 }
