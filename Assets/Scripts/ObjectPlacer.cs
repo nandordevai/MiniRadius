@@ -45,25 +45,24 @@ public class ObjectPlacer : MonoBehaviour
     }
 
     Vector3 GetScale() {
-        var v = new Vector3(1, 1, 1);
-        return v * sizes[selectedSizeItem] / 30f;
+        return Vector3.one * sizes[selectedSizeItem] / 30f;
     }
 
     void PlaceObject()
     {
-        area.transform.position = placement.position;
         area.transform.localScale = GetScale();
+        area.transform.position = placement.position;
+        area.transform.rotation = placement.rotation;
+
         if (area.name == "Cube Container")
         {
-            area.transform.Translate(Vector3.left * sizes[selectedSizeItem] / 100 / 2);
+            area.transform.Translate(Vector3.forward * sizes[selectedSizeItem] / 100 / 4);
         }
-        area.transform.rotation = placement.rotation;
-        if (area.name == "Cone Container")
+        else if (area.name == "Cone Container")
         {
-            area.transform.Translate(Vector3.down * sizes[selectedSizeItem] / 100 / 2);
-            var rot = Quaternion.Euler(90f, 0f, 180f) * placement.rotation.eulerAngles;
-            area.transform.RotateAround(placement.position, rot, 90);
+            area.transform.Translate(Vector3.forward * sizes[selectedSizeItem] / 100 / 2);
         }
+
         if (!area.activeSelf)
         {
             area.SetActive(true);
