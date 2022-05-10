@@ -1,6 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(MeshFilter))]
+[ExecuteInEditMode]
 public class Cone : MonoBehaviour
 {
     public int subdivisions = 16;
@@ -60,5 +61,11 @@ public class Cone : MonoBehaviour
 		mesh.RecalculateNormals();
 
 		return mesh;
+	}
+
+	void OnDrawGizmos()
+	{
+		Gizmos.color = Color.green;
+		Gizmos.DrawSphere(transform.position, 5f);
 	}
 }
